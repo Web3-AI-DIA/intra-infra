@@ -1,0 +1,21 @@
+import { ethers } from 'ethers';
+import config from './indexer.json';
+import abi from './abi.json';
+
+async function main() {
+  // Filecoin/FVM RPC
+  const provider = new ethers.JsonRpcProvider('https://api.node.glif.io');
+  console.log(`Starting FVM Indexer for ${config.name} at ${config.address}`);
+
+  const contract = new ethers.Contract(config.address, abi, provider);
+
+  {{#each events}}
+  contract.on('{{this}}', (...args) => {
+    // The last argument is the event object
+    const event = args[args.length - 1];
+    console.log(`[Event: {{this}}] Block: ${event.blockNumber}`, args.slice(0, -1));
+  });
+  {{/each}}
+}
+
+main().catch(console.error);

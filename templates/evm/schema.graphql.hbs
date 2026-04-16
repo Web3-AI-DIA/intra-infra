@@ -1,0 +1,12 @@
+{{#each events}}
+type {{name}} @entity {
+  id: ID!
+  {{#each inputs}}
+  {{name}}: {{graphqlType}}!
+  {{/each}}
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+{{/each}}

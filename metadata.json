@@ -1,0 +1,6 @@
+{
+  "name": "Intra-Infra",
+  "description": "A universal, open-source, public-good indexing generator that supports multiple chains and multiple indexer backends.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

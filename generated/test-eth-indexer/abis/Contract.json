@@ -1,0 +1,14 @@
+[
+  {
+    "type": "event",
+    "name": "Transfer",
+    "inputs": [],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Approval",
+    "inputs": [],
+    "anonymous": false
+  }
+]

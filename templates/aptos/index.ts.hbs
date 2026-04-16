@@ -1,0 +1,42 @@
+import { AptosClient } from 'aptos';
+import config from './indexer.json';
+
+async function main() {
+  const client = new AptosClient('https://fullnode.mainnet.aptoslabs.com/v1');
+  console.log(`Starting Aptos Indexer for module ${config.moduleName}`);
+
+  const accountAddress = "YOUR_ACCOUNT_ADDRESS";
+  const eventHandles = [
+    {{#each events}}
+    { struct: '{{this}}', fieldName: 'events' },
+    {{/each}}
+  ];
+
+  // Polling state
+  const cursors: Record<string, number> = {};
+
+  setInterval(async () => {
+    try {
+      for (const handle of eventHandles) {
+        const start = cursors[handle.struct] || 0;
+        const events = await client.getEventsByEventHandle(
+          accountAddress,
+          `${accountAddress}::${config.moduleName}::${handle.struct}`,
+          handle.fieldName,
+          { start, limit: 100 }
+        );
+
+        if (events.length > 0) {
+          for (const event of events) {
+            console.log(`[Event: ${handle.struct}] Sequence: ${event.sequence_number}`, event.data);
+          }
+          cursors[handle.struct] = parseInt(events[events.length - 1].sequence_number, 10) + 1;
+        }
+      }
+    } catch (e) {
+      console.error('Error polling events:', e);
+    }
+  }, 5000);
+}
+
+main().catch(console.error);

@@ -1,0 +1,20 @@
+import { BigInt } from "@graphprotocol/graph-ts"
+import { Contract, {{#each events}}{{name}}{{#unless @last}}, {{/unless}}{{/each}} } from "../generated/Contract/Contract"
+import { {{#each events}}{{name}} as {{name}}Entity{{#unless @last}}, {{/unless}}{{/each}} } from "../generated/schema"
+
+{{#each events}}
+export function handle{{name}}(event: {{name}}): void {
+  let entity = new {{name}}Entity(event.transaction.hash.concatI32(event.logIndex.toI32()).toHexString())
+  
+  {{#each inputs}}
+  entity.{{name}} = event.params.{{name}}
+  {{/each}}
+
+  entity.blockNumber = event.block.number
+  entity.blockTimestamp = event.block.timestamp
+  entity.transactionHash = event.transaction.hash
+
+  entity.save()
+}
+
+{{/each}}

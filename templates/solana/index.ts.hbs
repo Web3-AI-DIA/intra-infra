@@ -1,0 +1,53 @@
+import { Connection, PublicKey } from '@solana/web3.js';
+import * as borsh from '@coral-xyz/borsh';
+import config from './indexer.json';
+
+// Dynamic Borsh Layouts based on IDL
+export const EventLayouts = {
+  {{#each events}}
+  {{name}}: borsh.struct([
+    {{#each fields}}
+    borsh.{{borshType}}('{{name}}'),
+    {{/each}}
+  ]),
+  {{/each}}
+};
+
+async function main() {
+  const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
+  const programId = new PublicKey(config.programId);
+
+  console.log(`Starting Solana Indexer for ${config.name} (${programId.toBase58()})`);
+
+  connection.onLogs(programId, (logs, ctx) => {
+    if (logs.err) return;
+
+    for (const log of logs.logs) {
+      if (log.includes('Program data:')) {
+        try {
+          // Extract base64 data
+          const base64Data = log.split('Program data: ')[1];
+          const buffer = Buffer.from(base64Data, 'base64');
+          
+          // The first 8 bytes are the discriminator
+          const discriminator = buffer.slice(0, 8);
+          const data = buffer.slice(8);
+
+          // Iterate over known events to find a match (in a real app, match discriminator)
+          for (const [eventName, layout] of Object.entries(EventLayouts)) {
+             try {
+               const decoded = layout.decode(data);
+               console.log(`[Event: ${eventName}]`, decoded);
+             } catch (e) {
+               // Ignore decoding errors for non-matching layouts
+             }
+          }
+        } catch (err) {
+          console.error('Failed to parse log:', err);
+        }
+      }
+    }
+  }, 'confirmed');
+}
+
+main().catch(console.error);

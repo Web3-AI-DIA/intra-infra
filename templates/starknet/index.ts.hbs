@@ -1,0 +1,51 @@
+import { Provider, RpcProvider, hash } from 'starknet';
+import config from './indexer.json';
+
+async function main() {
+  const provider = new RpcProvider({ nodeUrl: 'https://starknet-mainnet.public.blastapi.io' });
+  console.log(`Starting Starknet Indexer for ${config.name}`);
+
+  const contractAddress = "YOUR_CONTRACT_ADDRESS";
+  
+  // Compute event keys
+  const eventKeys = {
+    {{#each events}}
+    '{{this}}': hash.getSelectorFromName('{{this}}'),
+    {{/each}}
+  };
+
+  let lastBlock = await provider.getBlockNumber();
+
+  setInterval(async () => {
+    try {
+      const currentBlock = await provider.getBlockNumber();
+      if (currentBlock > lastBlock) {
+        console.log(`Fetching events from block ${lastBlock + 1} to ${currentBlock}`);
+        
+        const eventsList = await provider.getEvents({
+          address: contractAddress,
+          from_block: { block_number: lastBlock + 1 },
+          to_block: { block_number: currentBlock },
+          chunk_size: 100
+        });
+
+        for (const event of eventsList.events) {
+          const key = event.keys[0];
+          const eventName = Object.keys(eventKeys).find(k => eventKeys[k as keyof typeof eventKeys] === key);
+          
+          if (eventName) {
+            console.log(`[Event: ${eventName}]`, event.data);
+          } else {
+            console.log(`[Unknown Event Key: ${key}]`, event.data);
+          }
+        }
+
+        lastBlock = currentBlock;
+      }
+    } catch (e) {
+      console.error('Error fetching Starknet events:', e);
+    }
+  }, 10000);
+}
+
+main().catch(console.error);

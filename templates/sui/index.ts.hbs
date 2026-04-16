@@ -1,0 +1,42 @@
+import { SuiClient, getFullnodeUrl } from '@mysten/sui.js/client';
+import { bcs } from '@mysten/bcs';
+import config from './indexer.json';
+
+// Dynamic BCS Layouts based on Move Structs
+{{#each structs}}
+const {{name}}Bcs = bcs.struct('{{name}}', {
+  {{#each fields}}
+  {{name}}: bcs.{{bcsType}}(),
+  {{/each}}
+});
+{{/each}}
+
+async function main() {
+  const client = new SuiClient({ url: getFullnodeUrl('mainnet') });
+  console.log(`Starting Sui Indexer for module ${config.moduleName}`);
+
+  // Subscribe to events
+  const unsubscribe = await client.subscribeEvent({
+    filter: { MoveModule: { package: "YOUR_PACKAGE_ID", module: config.moduleName } },
+    onMessage: (event) => {
+      console.log('Received raw event:', event.type);
+      
+      try {
+        // Parse the event based on its type
+        const eventType = event.type.split('::').pop();
+        
+        {{#each structs}}
+        if (eventType === '{{name}}') {
+           // In a real scenario, you might decode raw BCS bytes if querying raw objects,
+           // but for events, Sui provides parsedJson. We log it directly or validate it.
+           console.log(`Parsed {{name}}:`, event.parsedJson);
+        }
+        {{/each}}
+      } catch (err) {
+        console.error('Failed to process event:', err);
+      }
+    }
+  });
+}
+
+main().catch(console.error);
