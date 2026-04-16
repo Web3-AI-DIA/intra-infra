@@ -9,9 +9,9 @@ Multi-chain indexing is painful because each blockchain ecosystem has its own un
 - **EVM** → The Graph subgraph
 - **Solana** → Anchor IDL → Solana Indexer scaffold
 - **Sui** → Move module → Sui Indexer scaffold
-- **Aptos** → Move module → Aptos Indexer scaffold
-- **Starknet** → Cairo contract → Starknet Indexer scaffold
-- **Filecoin/FVM** → ABI → FVM indexer scaffold
+- **Aptos** → Move module → Aptos Indexer scaffold (Coming soon)
+- **Starknet** → Cairo contract → Starknet Indexer scaffold (Coming soon)
+- **Filecoin/FVM** → ABI → FVM indexer scaffold (Coming soon)
 
 ## Key Features
 - Multi-chain ABI/IDL parsing.
@@ -79,12 +79,6 @@ intra-infra generate indexer-starknet --cairo ./contract.json --name MyStarknetI
 ```bash
 intra-infra generate indexer-fvm --network filecoin --address f01234 --abi ./Contract.json --name MyFvmIndexer
 ```
-
-## Roadmap
-- **v1**: Multi-chain generators (this MVP)
-- **v2**: Hosted UI
-- **v3**: Plugin marketplace
-- **v4**: AI-assisted indexer generation
 
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request.
