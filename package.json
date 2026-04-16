@@ -2,7 +2,7 @@
   "name": "intra-infra",
   "version": "1.0.0",
   "description": "A universal, open-source, public-good indexing generator for multiple chains.",
-  "main": "dist/cli.js",
+  "main": "./dist/cli.js",
   "bin": {
     "intra-infra": "./dist/cli.js"
   },
