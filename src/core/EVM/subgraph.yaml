@@ -1,0 +1,6 @@
+// Placeholder for subgraph manifest generator.
+// This module will produce subgraph.yaml based on ABI + config.
+
+export function generateManifest(_config: any) {
+  throw new Error("EVM manifest generator not implemented yet.");
+}
