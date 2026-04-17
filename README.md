@@ -1,87 +1,95 @@
-# Intra-Infra
+Intra‑Infra
 
-## Project Overview
-Intra-Infra is a universal, open-source, public-good indexing generator that supports multiple chains and multiple indexer backends.
+Universal Multi‑Chain Indexer Scaffold Generator
 
-Multi-chain indexing is painful because each blockchain ecosystem has its own unique indexing tools, ABIs, IDLs, and architectures. Intra-Infra solves this by providing a unified CLI that automatically generates indexing scaffolds for multiple chains from their respective contract definitions (ABI, IDL, Move modules, Cairo contracts). It is a public-good developer tool designed to accelerate multi-chain dApp development.
+Intra‑Infra is an open‑source CLI tool that generates indexer scaffolds from on‑chain definitions such as IDLs, ABIs, Move modules, and Cairo contracts.
 
-## Supported Chains
-- **EVM** → The Graph subgraph
-- **Solana** → Anchor IDL → Solana Indexer scaffold
-- **Sui** → Move module → Sui Indexer scaffold
-- **Aptos** → Move module → Aptos Indexer scaffold (Coming soon)
-- **Starknet** → Cairo contract → Starknet Indexer scaffold (Coming soon)
-- **Filecoin/FVM** → ABI → FVM indexer scaffold (Coming soon)
+✅ Current Support
+- Solana — Anchor IDL → Indexer scaffold generator  
+  - Generates schema  
+  - Generates mappings  
+  - Generates config  
+  - Produces a ready‑to‑run indexer folder
 
-## Key Features
-- Multi-chain ABI/IDL parsing.
-- Automatic code generation.
-- Extensible architecture.
-- CLI-first developer experience.
+🚀 Upcoming (Funding Requested)
+- EVM — ABI → Subgraph generator for The Graph  
+  - schema.graphql  
+  - subgraph.yaml  
+  - Mappings (TypeScript)  
+  - Entities  
+  - Templates  
+  - Multi‑contract support  
 
-## Installation Instructions
+This work is proposed as part of a Tooling Grant from The Graph Foundation.
 
-### macOS (Homebrew)
-```bash
-brew install node
+---
+
+📦 Installation
+
+`
 npm install -g intra-infra
-```
+`
 
-### Linux (apt + nvm)
-```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
-nvm install node
-npm install -g intra-infra
-```
+---
 
-### Windows (Node installer)
-1. Download and install Node.js from [nodejs.org](https://nodejs.org/).
-2. Open Command Prompt or PowerShell and run:
-```cmd
-npm install -g intra-infra
-```
+🧩 Usage (Solana)
 
-## Installing The Graph CLI
-For EVM subgraph generation, you will need The Graph CLI:
-```bash
-npm install -g @graphprotocol/graph-cli
-graph --version
-```
+Generate a Solana indexer scaffold from an Anchor IDL:
 
-## Usage Examples
+`
+intra-infra generate solana --idl ./idl.json --out ./generated
+`
 
-### EVM (The Graph Subgraph)
-```bash
-intra-infra generate subgraph-evm --network mainnet --address 0x123... --abi ./Contract.json --name MyEvmIndexer
-```
+Output includes:
 
-### Solana
-```bash
-intra-infra generate indexer-solana --idl ./idl.json --name MySolanaIndexer
-```
+- Entities  
+- Schema  
+- Mappings  
+- Config  
+- Example handlers  
 
-### Sui
-```bash
-intra-infra generate indexer-sui --module ./module.json --name MySuiIndexer
-```
+---
 
-### Aptos
-```bash
-intra-infra generate indexer-aptos --module ./module.json --name MyAptosIndexer
-```
+🛠 Architecture
 
-### Starknet
-```bash
-intra-infra generate indexer-starknet --cairo ./contract.json --name MyStarknetIndexer
-```
+`
+src/
+  chains/
+    solana/   → full implementation
+    evm/      → placeholder (funded milestone)
+`
 
-### Filecoin/FVM
-```bash
-intra-infra generate indexer-fvm --network filecoin --address f01234 --abi ./Contract.json --name MyFvmIndexer
-```
+The architecture is modular and designed for multi‑chain expansion.
 
-## Contributing
-Contributions are welcome! Please open an issue or submit a pull request.
+---
 
-## License
-MIT License
+🗺 Roadmap
+
+See full roadmap in /docs/roadmap.md.
+
+Completed
+- [x] Solana (Anchor IDL → indexer scaffolds)
+- [x] CLI framework
+- [x] Multi‑chain architecture
+
+Upcoming (Pending Grant Funding)
+- [ ] EVM (ABI → Subgraph generator)
+- [ ] EVM templates (ERC‑20, ERC‑721, custom events)
+- [ ] Mapping generator
+- [ ] Schema inference improvements
+- [ ] Multi‑contract support
+
+---
+
+🤝 Contributing
+
+Contributions are welcome!  
+Templates for new chains can be added under src/chains/<chain>/templates.
+
+---
+
+📄 License
+
+MIT License.
+
+---
